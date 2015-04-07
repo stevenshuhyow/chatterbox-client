@@ -32,8 +32,8 @@ app.send = function(message){
 var getData = function(data){
   _.each(data, function(element){
     _.each(element, function(elem){
-      $('body').append("<div class = username>" + elem.username + "</div>");
-      $('body').append("<div class = message>" + elem.text + "</div>");
+      $('#main').append("<a class = username href='#'>" + elem.username + "</div>");
+      $('#main').append("<div class = message>" + elem.text + "</div>");
     })
   })
 }
@@ -76,7 +76,7 @@ var getUserMessage = function(results){
 }
 
 $(document).ready(function(){
-  $('body').on("click", ".username", function(){
+  $('body').on("click", "#main .username", function(){
     var specificUser = $(this).text();
     console.log(specificUser);
     app.addFriend(specificUser);
