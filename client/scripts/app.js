@@ -1,10 +1,14 @@
 // YOUR CODE HERE:
 //Display messages retrieved from the parse server
+var dataRetrieved;
 var app = {};
+
+//Define the initialization function
 app.init = function() {
 
 };
 
+//Define the send/POST function
 app.send = function(message){
   $.ajax({
     url: 'https://api.parse.com/1/classes/chatterbox',
@@ -21,6 +25,7 @@ app.send = function(message){
   });
 };
 
+//Define the fetch/GET function
 app.fetch = function(){
   $.ajax({
     url: 'https://api.parse.com/1/classes/chatterbox',
@@ -29,7 +34,8 @@ app.fetch = function(){
     contentType: 'application/json',
     calledOnce: true,
     success: function (data) {
-      console.log('chatterbox: Message sent');
+      //console.log('chatterbox: Message sent');
+      dataRetrieved = data;
       console.log(data);
     },
     error: function (data) {
@@ -39,6 +45,7 @@ app.fetch = function(){
   });
 }
 
+//
 app.server = 'https://api.parse.com/1/classes/chatterbox';
 
 app.clearMessages = function(){
