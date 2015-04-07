@@ -9,8 +9,23 @@ var userMessage = [];
 var friendList = [];
 //Define the initialization function
 app.init = function() {
+  console.log("init");
+  $(document).ready(function(){
+    $('body').on("click", "#main .username", function(){
+      var specificUser = $(this).text();
+      console.log(specificUser);
+      app.addFriend(specificUser);
+    });
 
+    $('#send').on("click", ".submit", function(evt){
+      console.log("33");
+      var message = $('textarea#message').val();
+      app.handleSubmit(message);
+      evt.preventDefault();
+    });
+  })
 };
+
 
 //Define the send/POST function
 app.send = function(message){
@@ -75,13 +90,6 @@ var getUserMessage = function(results){
   return userMessage;
 }
 
-$(document).ready(function(){
-  $('body').on("click", "#main .username", function(){
-    var specificUser = $(this).text();
-    console.log(specificUser);
-    app.addFriend(specificUser);
-  });
-});
 
 
 app.clearMessages = function(){
@@ -89,14 +97,15 @@ app.clearMessages = function(){
 };
 
 app.addMessage = function(message){
-  $('#chats').append("<p></p>");
-  $('#chats p').text(message.text);
-  //var elements = document.getElementById('chats');
-  //var textnode = document.createTextNode(message);
-  //elements.appendChild(textnode);
-  // var node = document.createElement("p");
-  // node.appendChild(textnode);
+  //$('#chats').append("<p class = username></p>");
+  //$('#chats p').text(message.username);
+  $('#chats').append("<p class = 'message username'></p>");
+  $('#chats p').text(message.username + " - " + message.text);
+}
 
+app.handleSubmit = function(message) {
+  $('#main').append("<p></p>");
+  $('#main p').text(message);
 }
 
 app.addRoom = function(roomName) {
@@ -117,6 +126,8 @@ var message = {
   'text': 'trololo',
   'roomname': '4chan'
 }
+
+app.init();
 
 
 
