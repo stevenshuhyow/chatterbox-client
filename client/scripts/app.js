@@ -1,8 +1,12 @@
 // YOUR CODE HERE:
 //Display messages retrieved from the parse server
 var dataRetrieved;
-var app = {};
-
+var app = {
+  server: 'https://api.parse.com/1/classes/chatterbox'
+};
+var userNameStorage = [];
+var userMessage = [];
+var friendList = [];
 //Define the initialization function
 app.init = function() {
 
@@ -25,28 +29,60 @@ app.send = function(message){
   });
 };
 
+var getData = function(data){
+  _.each(data, function(element){
+    _.each(element, function(elem){
+      $('body').append("<div class = username>" + elem.username + "</div>");
+      $('body').append("<div class = message>" + elem.text + "</div>");
+    })
+  })
+}
+
 //Define the fetch/GET function
 app.fetch = function(){
   $.ajax({
     url: 'https://api.parse.com/1/classes/chatterbox',
     type: 'GET',
-    data: JSON.stringify(message), //{limit:, order: }
+    data: JSON,
     contentType: 'application/json',
     calledOnce: true,
     success: function (data) {
       //console.log('chatterbox: Message sent');
+      console.log("hi");
+      getData(data);
+      getUserMessage(data);
       dataRetrieved = data;
-      console.log(data);
     },
     error: function (data) {
       // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
       console.error('chatterbox: Failed to send message');
     }
   });
+};
+
+
+var getUserName = function(results){
+  _.each(results, function(user, idx, list){
+    userNameStorage.push(user.username);
+  })
+  return userNameStorage;
 }
 
-//
-app.server = 'https://api.parse.com/1/classes/chatterbox';
+var getUserMessage = function(results){
+  _.each(results, function(user, idx, list){
+    userNameStorage.push(user.text);
+  })
+  return userMessage;
+}
+
+$(document).ready(function(){
+  $('body').on("click", ".username", function(){
+    var specificUser = $(this).text();
+    console.log(specificUser);
+    app.addFriend(specificUser);
+  });
+});
+
 
 app.clearMessages = function(){
   $('#chats').html('');
@@ -69,7 +105,10 @@ app.addRoom = function(roomName) {
 }
 
 
-app.addFriend = {};
+
+app.addFriend = function(username){
+  friendList.push(username);
+};
 
 
 
