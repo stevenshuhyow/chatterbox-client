@@ -4,7 +4,7 @@ var dataRetrieved;
 var app = {
   server: 'https://api.parse.com/1/classes/chatterbox'
 };
-var friendList = [];
+var friendList = {};
 var information = [];
 var roomNames = {};
 var currentRoom;
@@ -20,6 +20,8 @@ app.init = function() {
 
     $('body').on("click", "#main .username", function(){
       var specificUser = $(this).text();
+      var stopPoint = specificUser.indexOf(":");
+      specificUser = specificUser.slice(0,stopPoint);
       app.addFriend(specificUser);
     });
 
@@ -157,9 +159,15 @@ app.addRoom = function(roomName) {
 
 
 app.addFriend = function(username){
-  friendList.push(username);
+  console.log(username);
+  if(username !== undefined && !friendList.hasOwnProperty(username)){
+    friendList[username] = username;
+    // room.val(roomname);
+    var list = $('<div class="friendList"></div>');
+    list.text(username);
+    $('#friendList').append(list);
+  }
 };
-
 
 
 
