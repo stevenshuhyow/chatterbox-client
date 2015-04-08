@@ -8,33 +8,52 @@ var friendList = [];
 var information = [];
 var roomNames = {};
 var currentRoom;
+var currUser;
+
 //Define the initialization function
 app.init = function() {
    app.fetch();
 
 
   $(document).ready(function(){
+    currUser = prompt("Please enter your username");
 
     $('body').on("click", "#main .username", function(){
       var specificUser = $(this).text();
-      console.log(specificUser);
       app.addFriend(specificUser);
     });
 
     $('#send').on("click", ".submit", function(evt){
-      console.log("33");
-      var message = $('textarea#message').val();
-      app.handleSubmit(message);
+      var newPost = {};
+      newPost.text = $('textarea#message').val();
+      newPost.username = currUser;
+      newPost.roomname = currentRoom;
+      newPost.createdAt = new Date();
+      newPost.updatedAt = new Date();
+      information.push(newPost);
+      $('.username').remove();
+      filter(information);
+      // app.handleSubmit(newPost.message);
       evt.preventDefault();
+      $('textarea#message').val('')
+    });
+
+    $('select').on('change', function (e) {
+      $('.username').remove();
+      app.createRoomBar(roomNames);
+      currentRoom = $('select :selected').text();
+      filter(information);
+    });
+
+    $('.addRoom').on('click', function (e) {
+      var newRoom = prompt("Please enter the new chat room name: ");
+      $('.username').remove();
+      roomNames[newRoom] = newRoom;
+      app.createRoomBar(roomNames);
+      currentRoom = $('select :selected').text();
+      filter(information);
     });
   })
-
-  // var getRoomNames = _.each(information, function(element){
-  //   if(roomNames.indexOf(element.roomName) < 0){
-  //     roomNames.push(element.roomName);
-  //   }
-  // });
-
 
 };
 
@@ -70,7 +89,6 @@ var getData = function(data){
 var filter = function(objectList){
 
   _.each(objectList, function(elem){
-    console.log(elem)
     if(elem.roomname === currentRoom){
       $('#main #chats').append("<a class='username'>" + elem.username +" : " + elem.text+ "</a>");
     }
@@ -102,7 +120,7 @@ app.fetch = function(){
 
 app.createRoomBar = function(roomObject){
   _.each(roomObject, function(roomname){
-    if(roomname !== undefined){
+    if(roomname !== undefined && $('option').text().indexOf(roomname)===-1){
     var room = $('<option></option>');
     // room.val(roomname);
     room.text(roomname);
@@ -126,10 +144,10 @@ app.addMessage = function(message){
   $('#chats p').text(message.username + " - " + message.text);
 }
 
-app.handleSubmit = function(message) {
-  $('#main').append("<p></p>");
-  $('#main p').text(message);
-}
+// app.handleSubmit = function(message) {
+//   $('#main').append("<p></p>");
+//   $('#main p').text(message);
+// }
 
 app.addRoom = function(roomName) {
   $('#roomSelect').append("<p></p>");
@@ -144,69 +162,9 @@ app.addFriend = function(username){
 
 
 
-var message = {
-  'username': 'shawndrost',
-  'text': 'trololo',
-  'roomname': '4chan'
-}
 
 app.init();
 
 
 
-
-
-
-// Msg.retrieve = function() {
-//     $.ajax({
-//       url : 'https://api.parse.com/1/classes/<className>',
-//       type : 'GET',
-//       dataType: 'JSON',
-//       contentType : 'application/json',
-//       headers : {
-//         'X-Parse-Application-Id' : 'APP-ID',
-//         'X-Parse-REST-API-Key' : 'API-KEY'
-//       },
-//       data : JSON.stringify({
-//         key : 'value: '
-//       }),
-//       error : function(data) {
-//           console.log('error');
-//       },
-//       success : function(data) {
-//           console.log('success', data);
-//           return data;                      // do I need to return the data?
-//       }
-//     });
-//   }
-
-//Setup a way to refresh the displayed messages (either automatically or with a button)
-
-//Be careful to use proper escaping on any user input. Since you're displaying input that other users have typed, your app is vulnerable XSS attacks
-
-
-//Allow users to select a username and send messages
-
-
-
-// var message = {
-//   'username': 'shawndrost',
-//   'text': 'trololo',
-//   'roomname': '4chan'
-
-
-// $.ajax({
-//   // always use this url
-//   url: 'https://api.parse.com/1/classes/chatterbox',
-//   type: 'POST',
-//   data: JSON.stringify(message),
-//   contentType: 'application/json',
-//   success: function (data) {
-//     console.log('chatterbox: Message sent');
-//   },
-//   error: function (data) {
-//     // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-//     console.error('chatterbox: Failed to send message');
-//   }
-// });
 
