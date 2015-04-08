@@ -47,9 +47,9 @@ body {
 }
 
 form {
-    padding: 20px;
+    padding: 5px;
     padding-left: 0;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 form input[type=text] {
@@ -57,16 +57,29 @@ form input[type=text] {
     width: 70%;
     font-size: 12px;
     padding: 5px;
+    float:left;
 }
 
-.chat {
+button {
+    float:right;
+}
+
+#chat {
     padding: 5px;
+    height: 350px;
+    width: 150px;
     margin-bottom: 5px;
     background-color: #eee;
+    overflow: scroll;
+    display:block;
 }
 
-.chat .username {
-    font-weight: 800;
+.username {
+    position: relative;
+    font-weight: 200;
+    display: block;
+    padding: 5px;
+    border: solid blue 2px;
 }
 
 .chat:hover {

@@ -4,13 +4,17 @@ var dataRetrieved;
 var app = {
   server: 'https://api.parse.com/1/classes/chatterbox'
 };
-var userNameStorage = [];
-var userMessage = [];
 var friendList = [];
+var information = [];
+var roomNames = {};
+var currentRoom;
 //Define the initialization function
 app.init = function() {
-  console.log("init");
+   app.fetch();
+
+
   $(document).ready(function(){
+
     $('body').on("click", "#main .username", function(){
       var specificUser = $(this).text();
       console.log(specificUser);
@@ -24,6 +28,14 @@ app.init = function() {
       evt.preventDefault();
     });
   })
+
+  // var getRoomNames = _.each(information, function(element){
+  //   if(roomNames.indexOf(element.roomName) < 0){
+  //     roomNames.push(element.roomName);
+  //   }
+  // });
+
+
 };
 
 
@@ -44,13 +56,27 @@ app.send = function(message){
   });
 };
 
+
+
 var getData = function(data){
   _.each(data, function(element){
     _.each(element, function(elem){
-      $('#main').append("<a class = username href='#'>" + elem.username + "</div>");
-      $('#main').append("<div class = message>" + elem.text + "</div>");
+      information.push(elem);
+      roomNames[elem.roomname] = elem.roomname;
     })
   })
+}
+
+var filter = function(objectList){
+
+  _.each(objectList, function(elem){
+    console.log(elem)
+    if(elem.roomname === currentRoom){
+      $('#main #chats').append("<a class='username'>" + elem.username +" : " + elem.text+ "</a>");
+    }
+
+  });
+
 }
 
 //Define the fetch/GET function
@@ -58,37 +84,34 @@ app.fetch = function(){
   $.ajax({
     url: 'https://api.parse.com/1/classes/chatterbox',
     type: 'GET',
-    data: JSON,
+    data: {limit: 10},
     contentType: 'application/json',
     calledOnce: true,
     success: function (data) {
-      //console.log('chatterbox: Message sent');
-      console.log("hi");
       getData(data);
-      getUserMessage(data);
-      dataRetrieved = data;
+      app.createRoomBar(roomNames);
+      currentRoom = $('select :selected').text();
+      filter(information);
     },
     error: function (data) {
       // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
       console.error('chatterbox: Failed to send message');
     }
   });
-};
-
-
-var getUserName = function(results){
-  _.each(results, function(user, idx, list){
-    userNameStorage.push(user.username);
-  })
-  return userNameStorage;
 }
 
-var getUserMessage = function(results){
-  _.each(results, function(user, idx, list){
-    userNameStorage.push(user.text);
+app.createRoomBar = function(roomObject){
+  _.each(roomObject, function(roomname){
+    if(roomname !== undefined){
+    var room = $('<option></option>');
+    // room.val(roomname);
+    room.text(roomname);
+    $('select').append(room);
+    }
   })
-  return userMessage;
 }
+
+
 
 
 
