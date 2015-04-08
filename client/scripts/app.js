@@ -6,7 +6,7 @@ var app = {
 };
 var friendList = {};
 var information = [];
-var roomNames = {};
+var roomNames = {FriendList: "FriendList"};
 var currentRoom;
 var currUser;
 
@@ -15,15 +15,17 @@ app.init = function() {
    app.fetch();
 
 
+
   $(document).ready(function(){
     currUser = prompt("Please enter your username");
 
     $('body').on("click", "#main .username", function(){
       var specificUser = $(this).text();
       var stopPoint = specificUser.indexOf(":");
-      specificUser = specificUser.slice(0,stopPoint);
+      specificUser = specificUser.slice(0,stopPoint-1);
       app.addFriend(specificUser);
     });
+
 
     $('#send').on("click", ".submit", function(evt){
       var newPost = {};
@@ -44,7 +46,13 @@ app.init = function() {
       $('.username').remove();
       app.createRoomBar(roomNames);
       currentRoom = $('select :selected').text();
+      if(currentRoom === "FriendList"){
+        friendFilter(information)
+      } else{
       filter(information);
+      }
+
+
     });
 
     $('.addRoom').on('click', function (e) {
@@ -99,6 +107,14 @@ var filter = function(objectList){
 
 }
 
+var friendFilter = function(information){
+  _.each(information, function(elem){
+    if(friendList[elem.username]){
+      $('#main #chats').append("<a class='username'>" + elem.username +" : " + elem.text+ "</a>");
+    }
+  })
+}
+
 //Define the fetch/GET function
 app.fetch = function(){
   $.ajax({
@@ -151,10 +167,10 @@ app.addMessage = function(message){
 //   $('#main p').text(message);
 // }
 
-app.addRoom = function(roomName) {
-  $('#roomSelect').append("<p></p>");
-  $('#roomSelect p').text(roomName);
-}
+// app.addRoom = function(roomName) {
+//   $('#roomSelect').append("<p></p>");
+//   $('#roomSelect p').text(roomName);
+// }
 
 
 
